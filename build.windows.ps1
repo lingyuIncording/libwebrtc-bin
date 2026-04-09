@@ -96,23 +96,23 @@ Get-PSDrive
 
 Push-Location $WEBRTC_DIR\src
   # WebRTC Debugビルド x64
-  gn gen $BUILD_DIR\debug_x64 --args='is_debug=true treat_warnings_as_errors=false rtc_use_h264=true rtc_include_tests=false rtc_build_tools=false rtc_build_examples=false rtc_use_perfetto=false is_component_build=false use_rtti=true use_custom_libcxx=false'
-  ninja -C "$BUILD_DIR\debug_x64"
+  #gn gen $BUILD_DIR\debug_x64 --args='is_debug=true treat_warnings_as_errors=false rtc_use_h264=true rtc_include_tests=false rtc_build_tools=false rtc_build_examples=false rtc_use_perfetto=false is_component_build=false use_rtti=true use_custom_libcxx=false'
+  #ninja -C "$BUILD_DIR\debug_x64"
 
   # WebRTC Releaseビルド x64
-  gn gen $BUILD_DIR\release_x64 --args='is_debug=false treat_warnings_as_errors=false rtc_use_h264=true rtc_include_tests=false rtc_build_tools=false rtc_build_examples=false rtc_use_perfetto=false is_component_build=false use_rtti=true strip_debug_info=true symbol_level=0 use_custom_libcxx=false'
-  ninja -C "$BUILD_DIR\release_x64"
+  #gn gen $BUILD_DIR\release_x64 --args='is_debug=false treat_warnings_as_errors=false rtc_use_h264=true rtc_include_tests=false rtc_build_tools=false rtc_build_examples=false rtc_use_perfetto=false is_component_build=false use_rtti=true strip_debug_info=true symbol_level=0 use_custom_libcxx=false'
+  #ninja -C "$BUILD_DIR\release_x64"
 
   # WebRTC Debugビルド x86
-  gn gen $BUILD_DIR\debug_x86 --args='target_os=\"win\" target_cpu=\"x86\" is_debug=true treat_warnings_as_errors=false rtc_use_h264=true rtc_include_tests=false rtc_build_tools=false rtc_build_examples=false rtc_use_perfetto=false is_component_build=false use_rtti=true use_custom_libcxx=false'
-  ninja -C "$BUILD_DIR\debug_x86"
+  #gn gen $BUILD_DIR\debug_x86 --args='target_os=\"win\" target_cpu=\"x86\" is_debug=true treat_warnings_as_errors=false rtc_use_h264=true rtc_include_tests=false rtc_build_tools=false rtc_build_examples=false rtc_use_perfetto=false is_component_build=false use_rtti=true use_custom_libcxx=false'
+  #ninja -C "$BUILD_DIR\debug_x86"
 
   # WebRTC Releaseビルド x86
   gn gen $BUILD_DIR\release_x86 --args='target_os=\"win\" target_cpu=\"x86\" is_debug=false treat_warnings_as_errors=false rtc_use_h264=true rtc_include_tests=false rtc_build_tools=false rtc_build_examples=false rtc_use_perfetto=false is_component_build=false use_rtti=true strip_debug_info=true symbol_level=0 use_custom_libcxx=false'
   ninja -C "$BUILD_DIR\release_x86"
 Pop-Location
 
-foreach ($build in @("debug_x64", "release_x64", "debug_x86", "release_x86")) {
+foreach ($build in @("release_x86")) {
   ninja -C "$BUILD_DIR\$build" audio_device_module_from_input_and_output
 
 
@@ -146,30 +146,16 @@ New-Item $BUILD_DIR\package\webrtc\debug -ItemType Directory -Force
 New-Item $BUILD_DIR\package\webrtc\release -ItemType Directory -Force
 
 
-# ライセンス生成 (x64)
-Push-Location $WEBRTC_DIR\src
-  vpython3 tools_webrtc\libs\generate_licenses.py --target :webrtc "$BUILD_DIR\" "$BUILD_DIR\debug_x64" "$BUILD_DIR\release_x64"
-Pop-Location
-Copy-Item "$BUILD_DIR\LICENSE.md" "$BUILD_DIR\package\webrtc\NOTICE"
-
-# x64用ライブラリコピー
-Copy-Item $BUILD_DIR\debug_x64\obj\webrtc.lib $BUILD_DIR\package\webrtc\debug\
-Copy-Item $BUILD_DIR\release_x64\obj\webrtc.lib $BUILD_DIR\package\webrtc\release\
-
-# ファイルを圧縮する
-New-Item $PACKAGE_DIR -ItemType Directory -Force
-Push-Location $BUILD_DIR\package\webrtc
-  cmd /s /c "C:\ProgramData\Chocolatey\bin\7z.exe" a -bsp0 -t7z:r -ssc -ms+ $PACKAGE_DIR\libwebrtc-win-x64.7z *
-Pop-Location
+# x64 builds skipped
 
 # ライセンス生成 (x86)
 Push-Location $WEBRTC_DIR\src
-  vpython3 tools_webrtc\libs\generate_licenses.py --target :webrtc "$BUILD_DIR\" "$BUILD_DIR\debug_x86" "$BUILD_DIR\release_x86"
+  vpython3 tools_webrtc\libs\generate_licenses.py --target :webrtc "$BUILD_DIR\" "$BUILD_DIR\release_x86"
 Pop-Location
 Copy-Item "$BUILD_DIR\LICENSE.md" "$BUILD_DIR\package\webrtc\NOTICE"
 
 # x86用ファイル一式作成
-Copy-Item $BUILD_DIR\debug_x86\obj\webrtc.lib $BUILD_DIR\package\webrtc\debug\
+#Copy-Item $BUILD_DIR\debug_x86\obj\webrtc.lib $BUILD_DIR\package\webrtc\debug\
 Copy-Item $BUILD_DIR\release_x86\obj\webrtc.lib $BUILD_DIR\package\webrtc\release\
 
 # ファイルを圧縮する

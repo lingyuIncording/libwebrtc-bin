@@ -111,12 +111,6 @@ Pop-Location
 foreach ($build in @("debug_x64", "release_x64", "debug_x86", "release_x86")) {
   ninja -C "$BUILD_DIR\$build" audio_device_module_from_input_and_output
 
-  Write-Host "=== Debug: Listing $BUILD_DIR\$build ===" 
-  Get-ChildItem "$BUILD_DIR\$build" -Filter "*.lib" -ErrorAction SilentlyContinue | ForEach-Object { Write-Host $_.FullName } 
-  Write-Host "=== Debug: Listing $BUILD_DIR\$build\obj ===" 
-  Get-ChildItem "$BUILD_DIR\$build\obj" -Filter "*.lib" -ErrorAction SilentlyContinue | ForEach-Object { Write-Host $_.FullName } 
-  Write-Host "=== Debug: Searching webrtc.lib recursively ===" 
-  Get-ChildItem "$BUILD_DIR\$build" -Recurse -Filter "webrtc.lib" -ErrorAction SilentlyContinue | ForEach-Object { Write-Host $_.FullName }
 
   # このままだと webrtc.lib に含まれないファイルがあるので、いくつか追加する
   Push-Location $BUILD_DIR\$build\obj

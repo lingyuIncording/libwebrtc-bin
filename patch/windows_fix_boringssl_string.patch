@@ -1,0 +1,11 @@
+diff --git a/third_party/boringssl/src/pki/string_util.h b/third_party/boringssl/src/pki/string_util.h
+--- a/third_party/boringssl/src/pki/string_util.h
++++ b/third_party/boringssl/src/pki/string_util.h
+@@ -7,6 +7,7 @@
+ 
+ #include <openssl/base.h>
+ #include <openssl/span.h>
++#include <string>
+ #include <string_view>
+ 
+ BSSL_NAMESPACE_BEGIN

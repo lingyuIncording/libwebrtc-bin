@@ -42,12 +42,12 @@ jobs:
       - name: Setup
         run: sudo scripts/apt_install.sh
       - name: Build
-        run: make -C build ${{ matrix.name }}
+        run: make -C build ${{ matrix.name == 'android' && 'USE_H264=1' || '' }} ${{ matrix.name }}
       - name: Upload artifact
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
-          name: libwebrtc-${{ matrix.name }}.tar.xz
-          path: package/libwebrtc-${{ matrix.name }}.tar.xz
+          name: libwebrtc-${{ matrix.name }}${{ matrix.name == 'android' && '-h264' || '' }}.tar.xz
+          path: package/libwebrtc-${{ matrix.name }}${{ matrix.name == 'android' && '-h264' || '' }}.tar.xz
           compression-level: 0
 
   build-macos:
